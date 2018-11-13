@@ -1,0 +1,182 @@
+import 'dart:async';
+import 'package:flutter/material.dart';
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        fontFamily: 'Quicksand',
+      ),
+      // home: MyHomePage(title: 'Madguys Home Page'),
+      home: SplashScreen(),
+      routes: <String, WidgetBuilder>{
+        '/HomeScreen': (BuildContext context) =>
+            new MyHomePage(title: 'Madguys Home Page')
+      },
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class SplashScreen extends StatefulWidget {
+  @override
+  _SplashScreenState createState() => new _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  AnimationController _loginButtonController;
+  Animation<double> _zoomOutTween;
+  double _height = 100.0;
+  double _width = 100.0;
+  startTime() async {
+    var _duration = new Duration(seconds: 5);
+    return new Timer(_duration, navigationPage);
+  }
+
+  void navigationPage() {
+    //Navigator.of(context).pushReplacementNamed('/HomeScreen');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loginButtonController = new AnimationController(
+        duration: new Duration(milliseconds: 3000), vsync: this);
+    _zoomOutTween = new Tween(
+      begin: 100.0,
+      end: 1000.0,
+    ).animate(new CurvedAnimation(
+      parent: _loginButtonController,
+      curve: new Interval(
+        0.550,
+        0.900,
+        curve: Curves.bounceOut,
+      ),
+    ))
+      ..addListener(() {
+        setState(() {
+          print('inside addListener');
+          _height = 1000.0;
+          _width = 1000.0;
+        });
+      });
+    startTime();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: new InkWell(
+      onTap: () {
+        _playAnimation();
+      },      
+      child: new Center(
+          child: new ClipOval(
+              child: Container(
+        decoration: new BoxDecoration(
+            color: Colors.purple,
+            gradient:
+                new RadialGradient(colors: [Colors.black12, Colors.black26])),
+        width: _height,
+        height: _width,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'mad',
+              style: TextStyle(
+                  fontSize: 40.0,
+                  fontWeight: FontWeight.w900,
+                  color: Colors.black87),
+            ),
+            Text(
+              'guys',
+              style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.black87),
+            ),
+          ],
+        ),
+      ))),
+    ));
+  }
+
+  // Future<Null> _playAnimation() async {
+  //   try {
+  //     await _loginButtonController.forward();
+  //     await _loginButtonController.reverse();
+  //   } on TickerCanceled {} catch (ex) {
+  //     print(ex);
+  //   }
+  // }
+
+  _playAnimation() {
+    try {
+      print('here');
+      _loginButtonController.forward();
+      // _loginButtonController.reverse();
+    } on TickerCanceled {} catch (ex) {
+      print(ex);
+    }
+  }
+
+  dispose() {
+    _loginButtonController.dispose();
+    super.dispose();
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  MyHomePage({Key key, this.title}) : super(key: key);
+  final String title;
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int _counter = 0;
+
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'You have clicked the button this many times:',
+              style: Theme.of(context).textTheme.subhead,
+            ),
+            Text(
+              '$_counter',
+              style: Theme.of(context).textTheme.display3,
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: Icon(Icons.add),
+      ),
+    );
+  }
+}
